@@ -1,0 +1,25 @@
+import(shiny)
+import(shinydashboard)
+import(devEMF)
+import(officer)
+import(flextable)
+import(mvtnorm)
+import(Rcpp)
+import(RcppNumerical)
+importFrom(Rcpp, evalCpp)
+importFrom(grDevices, dev.off)
+importFrom(graphics, abline, lines, plot, polygon)
+importFrom(stats, pt, qgamma, qnorm, qt, sd)
+
+export(
+    AnalysisApp, AnalysisReport,
+    MCPModAnalysis, MCPModSimulation,
+    SimulationApp, SimulationReport,
+    GenerateAnalysisReport, GenerateSimulationReport,
+    ComputeDRFunctionParameters, EvaluateDRFunction,
+    TestDoseResponseFunction, TestFindTargetDose)
+
+S3method(print, MCPModAnalysisResults)
+S3method(print, MCPModSimulationResults)
+
+useDynLib(MCPModPack, .registration = TRUE)
