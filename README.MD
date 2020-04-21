@@ -10,7 +10,7 @@ This package provides an efficient implementation of the MCPMod (Multiple Compar
 The following functions are included in the package:
 
 * MCPModAnalysis: Analyze data from a dose-finding trial using MCPMod. 
-* MCPModSimulation: Perform a simulation-based evaluation of a dose-finding trial designs using MCPMod. 
+* MCPModSimulation: Perform a simulation-based evaluation of dose-finding trial designs using MCPMod. 
 * AnalysisReport: Generate a detailed summary of MCPMod analysis results in a Microsoft Word format.
 * SimulationReport: Generate a detailed summary of MCPMod simulation results in a Microsoft Word format.
 * AnalysisApp: Launch an easy-to-use Shiny-based graphical user interface to analyze data from a dose-finding trial.

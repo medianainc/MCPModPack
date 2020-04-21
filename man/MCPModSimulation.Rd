@@ -54,7 +54,7 @@ MCPModSimulation(endpoint_type, models, alpha, direction,
     \item \code{"doses"}: Numeric vector defining the dose levels in each trial arm.
     \item \code{"dropout_rate"}: Numeric value defining the dropout rate in the simulated trial (between 0 and 1).
     \item \code{"nsims"}: Integer value defining the number of simulation runs.
-    \item \code{"go_threshold"}: Numeric value specifying the threshold for computing go probabilities. The threshold is defined relative to the placebo effect. A positive value is required if \code{direction = "Increasing"} and a negative value is required otherwise.
+    \item \code{"go_threshold"}: Numeric value specifying the threshold for computing go probabilities, i.e., probabilities that the maximum effect for the best dose-response model exceeds a pre-defined value. The threshold is defined relative to the placebo effect. A positive value is required if \code{direction = "Increasing"} and a negative value is required otherwise.
   }
   }
 
