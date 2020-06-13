@@ -16,9 +16,9 @@ Alex Dmitrienko <admitrienko@medianainc.com>
   \code{\link{MCPModSimulation}}, \code{\link{SimulationReport}}
 }
 \examples{
-  \donttest{
+	\donttest{
 # Launch a Shiny-based interface to perform a simulation-based evaluation 
 # of dose-finding trial designs
 SimulationApp()
-  }
+	}
 }

@@ -20,7 +20,7 @@ MCPModSimulation(endpoint_type, models, alpha, direction,
     \item \code{"Count"}: Count-type primary endpoint.
   }
   }
-  \item{models}{List of candidate dose-response models with initial values of the non-linear model parameters. The package supports the following dose-response models: linear, quadratic, exponential, emax, logistic and sigemax. No initial value is required for the linear model, a single initial value is required for the quadratic, exponential and Emax models, and two initial values are required for the quadratic, logistic and sigEmax models.
+  \item{models}{List of candidate dose-response models with initial values of the non-linear model parameters. The package supports the following dose-response models: linear, quadratic, exponential, emax, logistic and sigemax. No initial value is required for the linear model, a single initial value is required for the quadratic, exponential and Emax models, and two initial values are required for the logistic and sigEmax models.
   }
   \item{alpha}{Numeric value defining the one-sided significance level (default value is 0.025).
   }
@@ -41,20 +41,20 @@ MCPModSimulation(endpoint_type, models, alpha, direction,
   }
   \item{theta}{Numeric vector defining the overdispersion parameter in each trial arm (required only with count-type primary endpoints).
   }    
-  \item{sim_models}{List defining the assumed dose-response model and its parameters, including initial values of the non-linear model parameters. The package supports the following dose-response models: linear, quadratic, exponential, Emax, logistic and sigEmax. No initial value is required for the linear and quadratic models, a single initial value is required for the exponential and Emax models, and two initial values are required for the quadratic, logistic and sigEmax models. The following components are required:
+  \item{sim_models}{List defining the assumed dose-response model and initial values of the non-linear parameters in the simulated trial. The package supports the following dose-response models: linear, quadratic, exponential, Emax, logistic and sigEmax. No initial value is required for the linear model, a single initial value is required for the quadratic, exponential and Emax models, and two initial values are required for the logistic and sigEmax models. The following components are required:
    \itemize{
     \item \code{"placebo_effect"}: Numeric value defining the placebo effect in the assumed dose-response model.
-    \item \code{"max_effect"}: Numeric vector defining the effects at the maximum dose in the assumed dose-response model. Positive values are required if \code{direction = "Increasing"} and negative values are required otherwise.
+    \item \code{"max_effect"}: Numeric vector defining the effects at the maximum dose in the assumed dose-response model. Positive values are required if \cr \code{direction = "Increasing"} and negative values are required otherwise.
     \item \code{"sd"}: Numeric vector defining the standard deviations of the response variable in each trial arm (required for normally distributed endpoints).
   }
   }
-  \item{sim_parameters}{List defining the design and simulation parameters. The following components are required:
+  \item{sim_parameters}{List defining the design and simulation parameters in the simulated trial. The following components are required:
    \itemize{
     \item \code{"n"}: Integer vector defining the number of patients in each trial arm.
     \item \code{"doses"}: Numeric vector defining the dose levels in each trial arm.
     \item \code{"dropout_rate"}: Numeric value defining the dropout rate in the simulated trial (between 0 and 1).
     \item \code{"nsims"}: Integer value defining the number of simulation runs.
-    \item \code{"go_threshold"}: Numeric value specifying the threshold for computing go probabilities, i.e., probabilities that the maximum effect for the best dose-response model exceeds a pre-defined value. The threshold is defined relative to the placebo effect. A positive value is required if \code{direction = "Increasing"} and a negative value is required otherwise.
+    \item \code{"go_threshold"}: Numeric value specifying the threshold for computing go probabilities, i.e., probabilities that the maximum effect for the best dose-response model exceeds a pre-defined value. The threshold is defined relative to the placebo effect. A positive value is required if \code{direction =} \code{"Increasing"} and a negative value is required otherwise.
   }
   }
 

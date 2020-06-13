@@ -7,8 +7,8 @@ MCPMod-based analysis of dose-finding clinical trials with normally distributed,
 This function implements the MCPMod-based analysis of dose-finding clinical trials with normally distributed, binary and count endpoints, including derivation of the optimal contrasts for the candidate dose-response models, evaluation of dose-response tests based on the optimal contrasts, selection of the significant dose-response models and estimation of the target dose. For more information, see the technical manual in the package's \code{doc} folder.
 }
 \usage{
-MCPModAnalysis(endpoint_type, models, dose, resp, 
-               alpha, direction, model_selection, Delta, theta)
+MCPModAnalysis(endpoint_type, models, dose, resp, alpha, direction, 
+               model_selection, Delta, theta)
 }
 \arguments{
   \item{endpoint_type}{Character value defining the primary endpoint's type. Possible values:  
@@ -18,7 +18,7 @@ MCPModAnalysis(endpoint_type, models, dose, resp,
     \item \code{"Count"}: Count-type primary endpoint.
   }
   }
-  \item{models}{List of candidate dose-response models with initial values of the non-linear model parameters. The package supports the following dose-response models: linear, quadratic, exponential, Emax, logistic and sigEmax. No initial value is required for the linear model, a single initial value is required for the quadratic, exponential and Emax models, and two initial values are required for the quadratic, logistic and sigEmax models.
+  \item{models}{List of candidate dose-response models with initial values of the non-linear model parameters. The package supports the following dose-response models: linear, quadratic, exponential, Emax, logistic and sigEmax. No initial value is required for the linear model, a single initial value is required for the quadratic, exponential and Emax models, and two initial values are required for the logistic and sigEmax models.
   }
   \item{dose, resp}{Numeric vectors of equal length specifying the dose and response values.
   }
@@ -108,6 +108,7 @@ results
 AnalysisReport(results, 
   "MCPMod analysis summary (Binary endpoint)", 
   "MCPMod analysis summary (Binary endpoint).docx") 
-
   }
 }
+
+

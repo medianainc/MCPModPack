@@ -11,7 +11,7 @@ This function creates a detailed summary of MCPMod simulation results in a Micro
 SimulationReport(results, report_title, report_filename)
 }
 \arguments{
-  \item{results}{Object of class \samp{MCPModSimulationResults} created by the \samp{MCPModSimulation} function.  
+  \item{results}{Object of class \samp{MCPModSimulationResults} created by the \code{\link{MCPModSimulation}} function.  
   }
   \item{report_title}{Character value defining the report's title.
   }
@@ -25,7 +25,7 @@ Alex Dmitrienko <admitrienko@medianainc.com>
   \code{\link{MCPModSimulation}}, \code{\link{AnalysisReport}}
 }
 \examples{
-  \donttest{
+  \donttest{  
 # Simulation-based evaluation of dose-finding trials with a binary endpoint
 
 # Endpoint type
@@ -51,6 +51,7 @@ direction = "increasing"
 model_selection = "AIC"
 
 # The treatment effect for identifying the target dose 
+# (this effect is defined relative to the placebo effect)
 Delta = 0.3
 
 # Select the assumed dose-response model and values of the non-linear model parameters
@@ -81,7 +82,6 @@ results
 # Detailed summary of the MCPMod simulation results
 SimulationReport(results, 
   "MCPMod simulation summary (Binary endpoint)", 
-  "MCPMod simulation summary (Binary endpoint).docx")
-
-  } 
+  "MCPMod simulation summary (Binary endpoint).docx") 
+  }
 }

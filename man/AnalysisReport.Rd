@@ -11,7 +11,7 @@ This function creates a detailed summary of MCPMod analysis results in a Microso
 AnalysisReport(results, report_title, report_filename)
 }
 \arguments{
-  \item{results}{Object of class \samp{MCPModAnalysisResults} created by the \samp{MCPModAnalysis} function.  
+  \item{results}{Object of class \samp{MCPModAnalysisResults} created by the \code{\link{MCPModAnalysis}} function.  
   }
   \item{report_title}{Character value defining the report's title.
   }
@@ -25,7 +25,7 @@ Alex Dmitrienko <admitrienko@medianainc.com>
   \code{\link{MCPModAnalysis}}, \code{\link{SimulationReport}}
 }
 \examples{
-  \donttest{
+  \donttest{  
 # MCPMod-based analysis of a dose-finding trial with a 
 # binary endpoint
 
@@ -52,6 +52,7 @@ direction = "increasing"
 model_selection = "AIC"
 
 # The treatment effect for identifying the target dose 
+# (this effect is defined relative to the placebo effect)
 Delta = 0.3
 
 # Perform an MCPMod-based analysis of the trial's data
@@ -72,6 +73,5 @@ results
 AnalysisReport(results, 
   "MCPMod analysis summary (Binary endpoint)", 
   "MCPMod analysis summary (Binary endpoint).docx") 
-
   }
 }

@@ -1,11 +1,6 @@
 \name{MCPModPack-package}
 \alias{MCPModPack-package}
 \alias{MCPModPack}
-\alias{TestDoseResponseFunction}
-\alias{TestFindTargetDose}
-\alias{binary}
-\alias{count}
-\alias{normal}
 \docType{package}
 \title{
 Design and analysis of dose-finding trials
@@ -17,17 +12,25 @@ The MCPModPack package facilitates the design and analysis of dose-finding clini
 \tabular{ll}{
 Package: \tab MCPModPack\cr
 Type: \tab Package\cr
-Version: \tab 0.1\cr
-Date: \tab 2020-01-24\cr
+Version: \tab 0.2\cr
+Date: \tab 2020-06-15\cr
 License: \tab GPL-3
 }
-Key functions included in the package:\cr
-\link{MCPModAnalysis}: Analyze data from a dose-finding trial using MCPMod.\cr
-\link{AnalysisReport}: Generate a detailed summary of MCPMod analysis results in a Microsoft Word format.\cr
-\link{AnalysisApp}: Launch a Shiny-based graphical user interface to analyze data from a dose-finding trial.\cr
-\link{MCPModSimulation}: Perform a simulation-based evaluation of dose-finding trial designs using MCPMod.\cr
-\link{SimulationReport}: Generate a detailed summary of MCPMod simulation results in a Microsoft Word format.\cr
-\link{SimulationApp}: Launch a Shiny-based graphical user interface to perform a simulation-based evaluation of dose-finding trial designs.\cr
+Key functions included in the package:
+\itemize{
+\item \code{\link{MCPModAnalysis}}: Analyze data from a dose-finding trial using MCPMod.
+\item \code{\link{AnalysisReport}}: Generate a detailed summary of MCPMod analysis results in a Microsoft Word format.
+\item \code{\link{AnalysisApp}}: Launch a Shiny-based graphical user interface to analyze data from a dose-finding trial.
+\item \code{\link{MCPModSimulation}}: Perform a simulation-based evaluation of dose-finding trial designs using MCPMod.
+\item \code{\link{SimulationReport}}: Generate a detailed summary of MCPMod simulation results in a Microsoft Word format.
+\item \code{\link{SimulationApp}}: Launch a Shiny-based graphical user interface to perform a simulation-based evaluation of dose-finding trial designs.
+}
+The package comes with three example data sets:
+\itemize{
+\item \code{\link{normal}}: Data set based on a dose-finding trial with a normally distributed endpoint.
+\item \code{\link{binary}}: Data set based on a dose-finding trial with a binary endpoint.
+\item \code{\link{count}}: Data set based on a dose-finding trial with a count endpoint. 
+}
 }
 \author{
 Alex Dmitrienko <admitrienko@medianainc.com>
@@ -47,7 +50,7 @@ Pinheiro J., Bornkamp B., Glimm E., Bretz F. (2013). Model-based dose finding un
 }
 \keyword{ package }
 \examples{
-  \donttest{
+    \donttest{
 # MCPMod-based analysis of a dose-finding trial with a normally distributed endpoint
 
 # Select the candidate dose-response models and initial values 
@@ -90,7 +93,6 @@ results
 # Detailed summary of the MCPMod analysis results
 AnalysisReport(results, 
   "MCPMod analysis summary (Normally distributed endpoint)", 
-  "MCPMod analysis summary (Normally distributed endpoint).docx")
-
+  "MCPMod analysis summary (Normally distributed endpoint).docx") 
   }
 }

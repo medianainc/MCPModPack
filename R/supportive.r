@@ -302,7 +302,6 @@ ModStep = function(endpoint_index, selected_models, theta_vector, dose, resp, de
 
 }
 
-
 # Compute the optimal contrasts, contrast correlation matrix and adjusted critical value
 ContrastStep = function(endpoint_index, selected_models, user_specified, n_groups, dose_levels, alpha, direction_index, mean_group, theta) {
 
@@ -324,13 +323,16 @@ ContrastStep = function(endpoint_index, selected_models, user_specified, n_group
     diag_vec = rep(0, n_doses)
 
     # Normal endpoint
-    if (endpoint_index == 1) Sinv = diag(n_groups)
+    if (endpoint_index == 1) {
+
+      for (i in 1:n_doses) diag_vec[i] = n_groups[i] 
+
+    }
 
     # Binary endpoint  
     if (endpoint_index == 2) {
 
       for (i in 1:n_doses) diag_vec[i] = n_groups[i] * mean_group[i] * (1 - mean_group[i])
-      Sinv = diag(diag_vec)
 
     }
 
@@ -338,9 +340,11 @@ ContrastStep = function(endpoint_index, selected_models, user_specified, n_group
     if (endpoint_index == 3) {
 
       for (i in 1:n_doses) diag_vec[i] = n_groups[i] * theta[i] * mean_group[i] / (theta[i] + mean_group[i])
-      Sinv = diag(diag_vec)
 
     }
+
+    S =  diag(1 / diag_vec)  
+    Sinv = diag(diag_vec)
 
     dr_model = rep(0, n_doses)
 
@@ -386,40 +390,27 @@ ContrastStep = function(endpoint_index, selected_models, user_specified, n_group
 
     }
 
-
-    #####################################################
-
-    # Compute the correlation matrix for the model-specific test statistics
-
-    corr_matrix = matrix(1, n_models, n_models)   
-    for (i in 1:n_models) {
-      for (j in 1:n_models) {
-        if (i == j) {
-          corr_matrix[i, j] = 1
-        } else {
-          top = 0
-          bottom1 = 0
-          bottom2 = 0
-          for (l in 1:n_doses) {
-            top = top + opt_contrast[l, i] * opt_contrast[l, j] / n_groups[l]
-            bottom1 = bottom1 + opt_contrast[l, i]^2 / n_groups[l]
-            bottom2 = bottom2 + opt_contrast[l, j]^2 / n_groups[l]
-          }
-          corr_matrix[i, j] = top / sqrt(bottom1 * bottom2)
-        }
-      }
-    }
-
     #####################################################
 
     # Apply the list of selected models
     opt_contrast = opt_contrast[, model_list]
-    corr_matrix = corr_matrix[model_list, model_list]
+
+    #####################################################
+
+    if (n_selected_models >= 2) {
+
+      # Compute the correlation matrix for the model-specific test statistics
+
+      cov_mat = t(opt_contrast) %*% S %*% opt_contrast
+      diag_mat = diag(sqrt(diag(cov_mat)))
+      corr_matrix = solve(diag_mat) %*% cov_mat %*% solve(diag_mat)
+
+    }
 
     #####################################################
 
     # Critical value based on a univariate or multivariate t distribution
-    if (n_selected_models >= 2) crit_value = qmvt(p = 1 - alpha, tail = "lower.tail", df = n_patients - n_doses, corr = corr_matrix, maxpts = 30000, abseps = 0.001, releps = 0)$quantile else crit_value = qt(p = 1 - alpha, df = n_patients - n_doses)
+    if (n_selected_models >= 2) crit_value = qmvt(p = 1 - alpha, tail = "lower.tail", df = n_patients - n_doses, corr = corr_matrix, maxpts = 30000, abseps = 0.001, releps = 0, algorithm = GenzBretz())$quantile else crit_value = qt(p = 1 - alpha, df = n_patients - n_doses)
 
     # Account for the direction of the dose-response relationship  
     crit_value = crit_value * direction_index
@@ -756,14 +747,14 @@ MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "i
                            lower_values_sign = c(NA),
                            upper_values = c(NA),
                            upper_values_sign = c(NA),
-                           "Treatment effect for identifying the target dose (delta)",
+                           "Treatment effect for identifying the target dose (Delta)",
                            c("Value"),
                            "double",
                            NA) 
 
-    if (direction_index == 1 & delta <= 0) stop("MCPModSimulation: Treatment effect for identifying the target dose (delta): Value must be positive if the direction of the dose-response relationship (direction) is Increasing.", call. = FALSE)
+    if (direction_index == 1 & delta <= 0) stop("MCPModSimulation: Treatment effect for identifying the target dose (Delta): Value must be positive if the direction of the dose-response relationship (direction) is Increasing.", call. = FALSE)
 
-    if (direction_index == -1 & delta >= 0) stop("MCPModSimulation: Treatment effect for identifying the target dose (delta): Value must be negative if the direction of the dose-response relationship (direction) is Decreasing.", call. = FALSE)
+    if (direction_index == -1 & delta >= 0) stop("MCPModSimulation: Treatment effect for identifying the target dose (Delta): Value must be negative if the direction of the dose-response relationship (direction) is Decreasing.", call. = FALSE)
 
       n = ContinuousErrorCheck(sim_parameters$n, 
                          NA, 
@@ -1350,14 +1341,14 @@ MCPModAnalysis = function(endpoint_type, models, dose, resp, alpha = 0.025, dire
                            lower_values_sign = c(NA),
                            upper_values = c(NA),
                            upper_values_sign = c(NA),
-                           "Treatment effect for identifying the target dose (delta)",
+                           "Treatment effect for identifying the target dose (Delta)",
                            c("Value"),
                            "double",
                            NA) 
 
-    if (direction_index == 1 & delta <= 0) stop("MCPModAnalysis: Treatment effect for identifying the target dose (delta): Value must be positive if the direction of the dose-response relationship (direction) is Increasing.", call. = FALSE)
+    if (direction_index == 1 & delta <= 0) stop("MCPModAnalysis: Treatment effect for identifying the target dose (Delta): Value must be positive if the direction of the dose-response relationship (direction) is Increasing.", call. = FALSE)
 
-    if (direction_index == -1 & delta >= 0) stop("MCPModAnalysis: Treatment effect for identifying the target dose (delta): Value must be negative if the direction of the dose-response relationship (direction) is Decreasing.", call. = FALSE)
+    if (direction_index == -1 & delta >= 0) stop("MCPModAnalysis: Treatment effect for identifying the target dose (Delta): Value must be negative if the direction of the dose-response relationship (direction) is Decreasing.", call. = FALSE)
 
     dose = ContinuousErrorCheck(dose, 
                        NA, 
@@ -1677,6 +1668,8 @@ print.MCPModAnalysisResults = function (x, digits = 3, ...) {
     colnames(x) = c("Model", "Test statistic", "Adjusted p-value", "Significant contrast")
     print(x, row.names = FALSE)
 
+    cat("\nAdjusted critical value: ", round(contrast_results$crit_value, 3), sep = "") 
+
     ##################################################################
 
     cat("\n\n***************************************\n\n")
@@ -1804,7 +1797,7 @@ print.MCPModAnalysisResults = function (x, digits = 3, ...) {
 
     cat("***************************************\n\n")
 
-    cat("Model-specific estimated target doses (based on delta = ", input_parameters$delta, ")\n\n", sep = "") 
+    cat("Model-specific estimated target doses (based on Delta = ", input_parameters$delta, ")\n\n", sep = "") 
 
     x = cbind(DF_selected_model_list, 
               sprintf("%0.3f", target_dose))
@@ -2327,8 +2320,10 @@ GenerateAnalysisReport = function(results, report_title) {
 
     title = paste0("Table ", table_index, ". Model-specific contrast tests.")
 
+    footnote = paste0("Adjusted critical value: ", round(contrast_results$crit_value, 3), ".") 
+
     column_width = c(1.25, 1.5, 1.5, 2.25)
-    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, TRUE)
+    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, TRUE, footnote)
     item_index = item_index + 1
     table_index = table_index + 1  
 
@@ -2400,8 +2395,10 @@ GenerateAnalysisReport = function(results, report_title) {
     data_frame = cbind(col1, col2)
     title = paste0("Table ", table_index, ". Model selection parameters.")
 
+    footnote = "Delta is defined as the pre-defined clinically meaningful improvement over placebo."
+
     column_width = c(3, 3.5)
-    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, FALSE)
+    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, FALSE, footnote)
     item_index = item_index + 1
     table_index = table_index + 1  
 
@@ -2755,11 +2752,13 @@ GenerateSimulationReport = function(results, report_title) {
     col1 = c(col1, "Model selection criterion", "Delta")
     col2 = c(col2, model_selection_label, input_parameters$delta)
 
+    footnote = "Delta is defined as the pre-defined clinically meaningful improvement over placebo."
+
     data_frame = cbind(col1, col2)
     title = paste0("Table ", table_index, ". Model selection parameters.")
 
     column_width = c(3, 3.5)
-    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, TRUE)
+    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, TRUE, footnote)
     item_index = item_index + 1
     table_index = table_index + 1  
 
@@ -3093,7 +3092,6 @@ GenerateSimulationReport = function(results, report_title) {
           lines(x = sim_results$dosex, y = sim_results$dose_response_mean[, i], col="black", lwd = 2)  
           lines(x = eval_function_list[[i]]$x, y = eval_function_list[[i]]$y, col="red", lwd = 2)  
           
-          # abline(h = input_parameters$placebo_effect + input_parameters$delta, lty = "dashed")        
           if (!is.na(sim_results$target_dose_summary[i, 2])) abline(v = sim_results$target_dose_summary[i, 2], lty = "dashed") 
           dev.off()
 
