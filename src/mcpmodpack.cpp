@@ -1109,7 +1109,7 @@ public:
             // Restricted estimates
             e0 = beta[0];    
             emax = beta[1];    
-            ed50 = beta[2];    
+            ed50 = max(beta[2], 0.01);    
             sigma = max(beta[3], 0.0001);    
 
             for(i = 0; i < n; i++) {
@@ -1134,7 +1134,7 @@ public:
             // Restricted estimates
             e0 = beta[0];    
             emax = beta[1];    
-            ed50 = beta[2];    
+            ed50 = max(beta[2], 0.01);    
 
             for(i = 0; i < n; i++) {
                 mu = e0 + emax * X[i] / (ed50 + X[i]);              
@@ -1163,7 +1163,7 @@ public:
             // Restricted estimates
             e0 = beta[0];    
             emax = beta[1];    
-            ed50 = beta[2];    
+            ed50 = max(beta[2], 0.01);    
 
             for(i = 0; i < n; i++) {
                 mu = e0 + emax * X[i] / (ed50 + X[i]);
@@ -1216,8 +1216,8 @@ public:
             // Restricted estimates
             e0 = beta[0];    
             emax = beta[1];    
-            ed50 = beta[2];    
-            delta = beta[3];    
+            ed50 = max(beta[2], 0.01);    
+            delta = max(beta[3], 0.01);    
             sigma = max(beta[4], 0.0001);    
 
             for(i = 0; i < n; i++) {
@@ -1243,8 +1243,8 @@ public:
             // Restricted estimates
             e0 = beta[0];    
             emax = beta[1];    
-            ed50 = beta[2];    
-            delta = beta[3];  
+            ed50 = max(beta[2], 0.01);    
+            delta = max(beta[3], 0.01);    
 
             for(i = 0; i < n; i++) {
                 den = 1.0 + exp((ed50 - X[i]) / delta);
@@ -1275,8 +1275,8 @@ public:
             // Restricted estimates
             e0 = beta[0];    
             emax = beta[1];    
-            ed50 = beta[2];    
-            delta = beta[3];    
+            ed50 = max(beta[2], 0.01);    
+            delta = max(beta[3], 0.01);    
 
             for(i = 0; i < n; i++) {
                 den = 1.0 + exp((ed50 - X[i]) / delta);
@@ -1822,7 +1822,7 @@ List MCPModRunSimulations(const int &endpoint_index_arg,
 
     vector<int> any_significant_models(nsims);
     vector<double> sign_model(n_selected_models), test_stat(n_selected_models), group_mean(n_doses), group_n(n_doses), var_group(n_doses), power(n_scenarios), beta(n_parameters), sample, model_weight(n_selected_models), temp_vec, true_target_dose(n_scenarios), go_prob(n_scenarios), dose, response;
-    double denom, numer, pooled_variance, temp_min, temp_max, mean, current_value, current_target_dose, group_logit, group_var, denominator, current_criterion, max_effect;
+    double denom, numer, pooled_variance, pred, temp_min, temp_max, mean, current_value, current_target_dose, group_logit, group_var, denominator, current_criterion, max_effect;
 
     NumericVector x, y;
 
@@ -2229,9 +2229,12 @@ List MCPModRunSimulations(const int &endpoint_index_arg,
              for (i = 0; i < n_points; i++) {
 
                 temp_vec.clear();
+
                 for (j = 0; j < model_parameters.size(); j++) {
 
-                    temp_vec.push_back(DoseResponseFunction(dosex[i], model_parameters[j].model, model_parameters[j].coef, direction_index)); 
+                    pred = DoseResponseFunction(dosex[i], model_parameters[j].model, model_parameters[j].coef, direction_index);
+
+                    temp_vec.push_back(pred); 
  
                 }
 
@@ -2245,7 +2248,7 @@ List MCPModRunSimulations(const int &endpoint_index_arg,
 
 
 
-            }
+          }
 
 
         }

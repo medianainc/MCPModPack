@@ -214,10 +214,12 @@ ComputeDRFunctionParameters = function(model_index, placebo_effect, max_effect, 
     # Quadratic model
     if (model_index == 2) {
         coef = rep(0, 3)
-        temp = - 1 / (2 * parameters[1])
         coef[1] = placebo_effect
-        coef[2] = 2 * max_effect / max_dose
-        coef[3] = - 0.5 * coef[2] / max_dose
+        coef[2] = sign(max_effect) * sqrt(- 4 * max_effect * parameters[1])
+        coef[3] = parameters[1]  
+        vertex = -coef[2] / (2 * coef[3])
+        if (vertex >= max_dose) coef[2] = (max_effect - coef[3] * max_dose^2) / max_dose 
+        if (max_effect == 0) coef[3] = 0                
     }
 
     # Exponential model
@@ -365,20 +367,35 @@ ContrastStep = function(endpoint_index, selected_models, user_specified, n_group
         if (length(non_linear_parameters) >= 3) non_linear_parameters = non_linear_parameters[3:length(non_linear_parameters)] else non_linear_parameters = 0
 
         # Parameters of a standardized model
-        parameter_values = ComputeDRFunctionParameters(i, 0, 1, max_dose, non_linear_parameters)
+        if (i != 2) parameter_values = ComputeDRFunctionParameters(i, 0, 1, max_dose, non_linear_parameters)
 
         # Alternative standardization for the quadratic model
         if (i == 2) {
-          temp = -0.5 / non_linear_parameters[1]
-          parameter_values[1] = 0
-          parameter_values[2] = 1 / (temp + non_linear_parameters[1] * temp^2)
-          parameter_values[3] = non_linear_parameters[1] * parameter_values[2] 
+
+          if (direction_index == 1) {
+  
+            temp = -0.5 / non_linear_parameters[1]
+            parameter_values[1] = 0
+            parameter_values[2] = 1 / (temp + non_linear_parameters[1] * temp^2)
+            parameter_values[3] = non_linear_parameters[1] * parameter_values[2] 
+
+          }
+
+          if (direction_index == -1) {
+  
+            temp = 0.5 / non_linear_parameters[1]
+            parameter_values[1] = 0
+            parameter_values[2] = -1 / (temp - non_linear_parameters[1] * temp^2)
+            parameter_values[3] = -non_linear_parameters[1] * parameter_values[2] 
+
+          }
 
         }
 
         for (j in 1:n_doses) {
 
           dr_model[j] = DRFunction(i, parameter_values, doses[j]) 
+          if (i == 2 & direction_index == -1) dr_model[j] = -DRFunction(i, parameter_values, doses[j]) 
 
         }
 
@@ -639,6 +656,11 @@ MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "i
         if (tolower(DF_endpoint_list[i]) == tolower(endpoint_type)) endpoint_index = i
     }   
 
+    if (!tolower(direction) %in% c("increasing", "decreasing")) stop("MCPModSimulation: Direction of the dose-response relationship (direction): Value must be Increasing or Decreasing.", call. = FALSE)
+
+    if (tolower(direction) == "decreasing") direction_index = -1
+    if (tolower(direction) == "increasing") direction_index = 1
+
     if (length(models) < 1) stop("MCPModSimulation: List of dose-response models and initial parameter values (models): At least one model must be specified.", call. = FALSE)
 
     selected_models = rep(FALSE, n_models)
@@ -647,8 +669,40 @@ MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "i
     if (endpoint_index == 1) user_specified$linear = c(0, 0, 1) else user_specified$linear = c(0, 0)
     if (!is.null(models$linear)) selected_models[1] = TRUE
 
-    if (endpoint_index == 1) user_specified$quadratic = c(0, 0, 1, 1) else user_specified$quadratic = c(0, 0, 1)
-    if (!is.null(models$quadratic)) selected_models[2] = TRUE 
+    if (endpoint_index == 1) user_specified$quadratic = c(0, 0, 0, 1) else user_specified$quadratic = c(0, 0, 0)
+    if (!is.null(models$quadratic)) {
+      selected_models[2] = TRUE 
+
+      if (direction_index == 1) {
+
+        user_specified$quadratic[3] =  ContinuousErrorCheck(models$quadratic[1], 
+                                                             1, 
+                                                             lower_values = NA,
+                                                             lower_values_sign = NA,
+                                                             upper_values = 0,
+                                                             upper_values_sign = "<",
+                                                             "Quadratic model (quadratic)",
+                                                             c("delta2"),
+                                                             "double",
+                                                             NA) 
+
+      }
+
+      if (direction_index == -1) {
+
+        user_specified$quadratic[3] =  ContinuousErrorCheck(models$quadratic[1], 
+                                                             1, 
+                                                             lower_values = 0,
+                                                             lower_values_sign = ">",
+                                                             upper_values = NA,
+                                                             upper_values_sign = NA,
+                                                             "Quadratic model (quadratic)",
+                                                             c("delta2"),
+                                                             "double",
+                                                             NA) 
+
+      }    
+    }
 
     if (endpoint_index == 1) user_specified$exponential = c(0, 0, 0, 1) else user_specified$exponential = c(0, 0, 0)
     if (!is.null(models$exponential)) {
@@ -728,12 +782,6 @@ MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "i
                                "double",
                                NA) 
 
-
-    if (!tolower(direction) %in% c("increasing", "decreasing")) stop("MCPModSimulation: Direction of the dose-response relationship (direction): Value must be Increasing or Decreasing.", call. = FALSE)
-
-    if (tolower(direction) == "decreasing") direction_index = -1
-    if (tolower(direction) == "increasing") direction_index = 1
-
     if (!model_selection %in% c("AIC", "maxT", "aveAIC")) stop("MCPModSimulation: Model selection criterion (model_selection): Value must be AIC, maxT or aveAIC.", call. = FALSE)
 
     if (model_selection == "AIC") model_selection_index = 1  
@@ -812,9 +860,9 @@ MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "i
                            "double",
                            NA) 
 
-    if (direction_index == 1 & go_threshold <= 0) stop("MCPModSimulation: Threshold for computing go probabilities (direction): Value must be positive if the direction of the dose-response relationship (direction) is Increasing.", call. = FALSE)
+    if (direction_index == 1 & go_threshold <= 0) stop("MCPModSimulation: Threshold for computing go probabilities (go_threshold): Value must be positive if the direction of the dose-response relationship (direction) is Increasing.", call. = FALSE)
 
-    if (direction_index == -1 & go_threshold >= 0) stop("MCPModSimulation: Threshold for computing go probabilities (direction): Value must be negative if the direction of the dose-response relationship (direction) is Decreasing.", call. = FALSE)
+    if (direction_index == -1 & go_threshold >= 0) stop("MCPModSimulation: Threshold for computing go probabilities (go_threshold): Value must be negative if the direction of the dose-response relationship (direction) is Decreasing.", call. = FALSE)
 
     if (!is.null(sim_parameters$nsims)) {
 
@@ -906,6 +954,10 @@ MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "i
     } else {
       stop("MCPModSimulation: Maximum effect over placebo in the simulation model (max_effect): Value must be specified.", call. = FALSE)
     }
+
+    if (direction_index == 1 & any(max_effect < 0)) stop("MCPModSimulation: Maximum effect over placebo in the simulation model (max_effect): Value must be positive if the direction of the dose-response relationship (direction) is Increasing.", call. = FALSE)
+
+    if (direction_index == -1 & any(max_effect > 0)) stop("MCPModSimulation: Maximum effect over placebo in the simulation model (max_effect): Value must be negative if the direction of the dose-response relationship (direction) is Decreasing.", call. = FALSE)
 
     max_dose = max(dose_levels)
     n_scenarios = length(max_effect)
@@ -1023,7 +1075,7 @@ MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "i
 
       if (length(parameters) != 1) stop("One parameter must be specified for the simulation model (quadratic).", call. = FALSE)    
 
-      for (i in 1:n_scenarios) {
+      for (i in 1:n_scenarios) { 
 
           coef = ComputeDRFunctionParameters(sim_model_index, placebo_effect_temp, max_effect_temp[i], max_dose, parameters)
           for (j in 1:3) sim_parameter_values[i, j] = coef[j]
@@ -1241,16 +1293,35 @@ MCPModAnalysis = function(endpoint_type, models, dose, resp, alpha = 0.025, dire
     if (!is.null(models$quadratic)) {
       selected_models[2] = TRUE  
 
-      user_specified$quadratic[3] =  ContinuousErrorCheck(models$quadratic[1], 
-                                                           1, 
-                                                           lower_values = c(NA),
-                                                           lower_values_sign = c(NA),
-                                                           upper_values = c(NA),
-                                                           upper_values_sign = c(NA),
-                                                           "Quadratic model (quadratic)",
-                                                           c("delta2"),
-                                                           "double",
-                                                           NA) 
+      if (direction_index == 1) {
+
+        user_specified$quadratic[3] =  ContinuousErrorCheck(models$quadratic[1], 
+                                                             1, 
+                                                             lower_values = NA,
+                                                             lower_values_sign = NA,
+                                                             upper_values = 0,
+                                                             upper_values_sign = "<",
+                                                             "Quadratic model (quadratic)",
+                                                             c("delta2"),
+                                                             "double",
+                                                             NA) 
+
+      }
+
+      if (direction_index == -1) {
+
+        user_specified$quadratic[3] =  ContinuousErrorCheck(models$quadratic[1], 
+                                                             1, 
+                                                             lower_values = 0,
+                                                             lower_values_sign = ">",
+                                                             upper_values = NA,
+                                                             upper_values_sign = NA,
+                                                             "Quadratic model (quadratic)",
+                                                             c("delta2"),
+                                                             "double",
+                                                             NA) 
+
+      }
 
     } 
 
@@ -3028,7 +3099,7 @@ GenerateSimulationReport = function(results, report_title) {
       height = 5
 
       # Determine the axis ranges
-      x_limit = c(input_parameters$max_effect[1], input_parameters$max_effect[length(input_parameters$max_effect)])
+      x_limit = c(min(input_parameters$max_effect), max(input_parameters$max_effect))
       y_limit = c(0, 1)
 
       page_break = FALSE
