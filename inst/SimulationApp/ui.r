@@ -360,7 +360,11 @@ shinyUI(
                 collapsible = TRUE,
                 width = NULL,
 
-                tableOutput("PowerSummary")
+                tableOutput("PowerSummary"),
+
+                tags$p(class = "help-block",
+                  "Power is the probability that the best dose-response contrast is significant.")
+
               )
             ),
           
@@ -403,7 +407,11 @@ shinyUI(
 
                 conditionalPanel(
                   condition = "input.model_selection != 3",
-                  tableOutput("GoProbabilities")
+                  tableOutput("GoProbabilities"),
+
+                tags$p(class = "help-block",
+                  "The go probability is the probability that the best dose-response contrast is significant and the maximum effect for the corresponding model exceeds the pre-defined go threshold.")
+                
                 ),
 
                 conditionalPanel(

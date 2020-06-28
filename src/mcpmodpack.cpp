@@ -668,6 +668,7 @@ double FindTargetDose(const int &model, const vector<double> &beta, const double
 
   }
 
+
   if (dose >= 0.0) {
 
       // Linear
@@ -697,14 +698,20 @@ double FindTargetDose(const int &model, const vector<double> &beta, const double
 
       // Exponential
       if (model == 3) {
-          if (abs(beta[1]) <= 0.0001) {
-              dose = -1.0;   
-          } else {
-              if (abs(local_delta / beta[1]) <= 0.0001) {
-                dose = -1.0; 
-              } else {
-                dose = beta[2] * log(local_delta / beta[1] + 1.0);
-              }
+          if (direction_index == 1) {
+            if (beta[1] > 0 &&  local_delta + beta[1] > 0.0) {
+                dose = beta[2] * (-log(beta[1]) + log(local_delta + beta[1]));  
+            } else {
+                dose = -1.0;   
+            } 
+          }
+
+          if (direction_index == -1) {
+            if (beta[1] < 0 && local_delta + beta[1] < 0.0) {
+                dose = beta[2] * (-log(-beta[1]) + log(-local_delta - beta[1]));  
+            } else {
+                dose = -1.0;   
+            } 
           }
 
       }
@@ -759,11 +766,9 @@ double FindTargetDose(const int &model, const vector<double> &beta, const double
   if (dose <= 0.0) dose = -1.0;
   if (dose >= 10000.0) dose = -1.0;
 
-
-    return dose;
+  return dose;
 
 }
-
 
 
 class RegressionLinear: public MFuncGrad

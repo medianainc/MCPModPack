@@ -641,7 +641,16 @@ MCPStep = function(endpoint_index, contrast_results, selected_models, user_speci
 
 }
 
-MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "increasing", model_selection = "AIC", Delta = 0, theta = 0, sim_models, sim_parameters) {
+MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "increasing", model_selection = "AIC", Delta, theta = 0, sim_models, sim_parameters) {
+
+    if (missing(endpoint_type)) stop("Endpoint type (endpoint_type): Value must be specified.", call. = FALSE)      
+    if (missing(models)) stop("Candidate dose-response models (models): Value must be specified.", call. = FALSE)
+
+    if (missing(Delta)) stop("Treatment effect for identifying the target dose (Delta): Value must be specified.", call. = FALSE)
+
+    if (missing(sim_models)) stop("Simulation models (sim_models): Value must be specified.", call. = FALSE)
+
+    if (missing(sim_parameters)) stop("Simulation parameters (sim_parameters): Value must be specified.", call. = FALSE)
 
     # Total number of models
     n_models = length(DF_model_list)
@@ -1260,7 +1269,16 @@ MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "i
 }
 # End of MCPModSimulation
 
-MCPModAnalysis = function(endpoint_type, models, dose, resp, alpha = 0.025, direction = "increasing", model_selection = "AIC", Delta = 0, theta = 0) {
+MCPModAnalysis = function(endpoint_type, models, dose, resp, alpha = 0.025, direction = "increasing", model_selection = "AIC", Delta, theta = 0) {
+
+    if (missing(endpoint_type)) stop("Endpoint type (endpoint_type): Value must be specified.", call. = FALSE)      
+    if (missing(models)) stop("Candidate dose-response models (models): Value must be specified.", call. = FALSE)
+
+    if (missing(dose)) stop("Dose values (dose): Value must be specified.", call. = FALSE)
+
+    if (missing(dose)) stop("Response values (resp): Value must be specified.", call. = FALSE)
+
+    if (missing(Delta)) stop("Treatment effect for identifying the target dose (Delta): Value must be specified.", call. = FALSE)
 
     # Total number of models
     n_models = length(DF_model_list)
@@ -2466,7 +2484,7 @@ GenerateAnalysisReport = function(results, report_title) {
     data_frame = cbind(col1, col2)
     title = paste0("Table ", table_index, ". Model selection parameters.")
 
-    footnote = "Delta is defined as the pre-defined clinically meaningful improvement over placebo."
+    footnote = "Delta is the pre-defined clinically meaningful improvement over placebo."
 
     column_width = c(3, 3.5)
     item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, FALSE, footnote)
@@ -2823,7 +2841,7 @@ GenerateSimulationReport = function(results, report_title) {
     col1 = c(col1, "Model selection criterion", "Delta")
     col2 = c(col2, model_selection_label, input_parameters$delta)
 
-    footnote = "Delta is defined as the pre-defined clinically meaningful improvement over placebo."
+    footnote = "Delta is the pre-defined clinically meaningful improvement over placebo."
 
     data_frame = cbind(col1, col2)
     title = paste0("Table ", table_index, ". Model selection parameters.")
@@ -2972,8 +2990,10 @@ GenerateSimulationReport = function(results, report_title) {
 
     title = paste0("Table ", table_index, ". Simulation results: Power.")
 
+    footnote = "Power is the probability that the best dose-response contrast is significant."
+
     column_width = c(2, 2.5, 2)
-    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, FALSE)
+    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, FALSE, footnote)
     item_index = item_index + 1
     table_index = table_index + 1 
 
@@ -2990,9 +3010,10 @@ GenerateSimulationReport = function(results, report_title) {
 
       title = paste0("Table ", table_index, ". Simulation results: Go probabilities based on the threshold of ", input_parameters$go_threshold, ".")
 
-      column_width = c(2, 2.5, 2)
+      footnote = "The go probability is the probability that the best dose-response contrast is significant and the maximum effect for the corresponding model exceeds the pre-defined go threshold."
 
-      item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, TRUE)
+      column_width = c(2, 2.5, 2)
+      item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, TRUE, footnote)
       item_index = item_index + 1
       table_index = table_index + 1 
 

@@ -13,7 +13,7 @@ The MCPModPack package facilitates the design and analysis of dose-finding clini
 Package: \tab MCPModPack\cr
 Type: \tab Package\cr
 Version: \tab 0.2\cr
-Date: \tab 2020-06-15\cr
+Date: \tab 2020-06-27\cr
 License: \tab GPL-3
 }
 Key functions included in the package:
