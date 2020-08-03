@@ -68,7 +68,7 @@ shinyUI(
                   condition = "input.delta >= 0 && input.direction == -1",
                   div(class = "alert alert-danger", "Treatment effect for identifying the target dose must be negative if the direction of the dose-response relationship is Decreasing.")
                 ),
-                numericInput(inputId = "delta", label = "Treatment effect for identifying the target dose", value = 0.5),
+                numericInput(inputId = "delta", label = "Treatment effect for identifying the target dose", value = 0.4),
                 tags$p(class = "help-block",
                 "The treatment effect for identifying the target dose is defined relative to the placebo effect.")
               ),
@@ -125,7 +125,7 @@ shinyUI(
                 checkboxInput("quadratic_model", "Quadratic model", TRUE),
                 conditionalPanel(
                   condition = "input.quadratic_model == true",
-                  numericInput(inputId = "quadratic_model_par1", label = "Delta", value = -1)
+                  numericInput(inputId = "quadratic_model_par1", label = "Delta", value = -0.5)
                 ),
                 hr(),
 
@@ -136,7 +136,7 @@ shinyUI(
                     condition = "input.exponential_model_par1 <= 0",
                     div(class = "alert alert-danger", "Delta must be > 0.")
                   ),
-                  numericInput(inputId = "exponential_model_par1", label = "Delta", value = 1, min = 0.0000001)
+                  numericInput(inputId = "exponential_model_par1", label = "Delta", value = 0.3)
                 ),
                 hr(),
 
@@ -147,7 +147,7 @@ shinyUI(
                     condition = "input.emax_model_par1 <= 0",
                     div(class = "alert alert-danger", "ED50 must be > 0.")
                   ),
-                  numericInput(inputId = "emax_model_par1", label = "ED50", value = 1)
+                  numericInput(inputId = "emax_model_par1", label = "ED50", value = 0.3)
                 ),
                 hr(),
         
@@ -158,8 +158,8 @@ shinyUI(
                     condition = "input.logistic_model_par1 <= 0 || input.logistic_model_par2 <= 0",
                     div(class = "alert alert-danger", "Both ED50 and Delta must be > 0.")
                   ),
-                  numericInput(inputId = "logistic_model_par1", label = "ED50", value = 1),
-                  numericInput(inputId = "logistic_model_par2", label = "Delta", value = 1)
+                  numericInput(inputId = "logistic_model_par1", label = "ED50", value = 0.5),
+                  numericInput(inputId = "logistic_model_par2", label = "Delta", value = 0.1)
                 ),
                 hr(),
         
@@ -170,8 +170,8 @@ shinyUI(
                     condition = "input.sigemax_model_par1 <= 0 || input.sigemax_model_par2 <= 0",
                     div(class = "alert alert-danger", "Both ED50 and h must be > 0.")
                   ),
-                  numericInput(inputId = "sigemax_model_par1", label = "ED50", value = 1),
-                  numericInput(inputId = "sigemax_model_par2", label = "h", value = 1)
+                  numericInput(inputId = "sigemax_model_par1", label = "ED50", value = 0.5),
+                  numericInput(inputId = "sigemax_model_par2", label = "h", value = 5)
                 )
               )
             ),
@@ -226,7 +226,7 @@ shinyUI(
                 hr(),
 
                 numericInput(inputId = "sim_models_placebo_effect", label = "Placebo effect",
-                            value = 0.5, min = 0.01, max = 0.99, step = 0.01),
+                            value = 0.4, min = 0.01, max = 0.99, step = 0.01),
 
                 conditionalPanel(
                   condition = "!RegExp('^\\\\s*\\\\-?\\\\d*\\\\.?\\\\d+\\\\s*(,\\\\s*\\\\-?\\\\d*\\\\.?\\\\d+\\\\s*)*$').test(input.sim_models_max_effect)",

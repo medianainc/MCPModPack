@@ -1,14 +1,14 @@
 Package: MCPModPack
 Type: Package
 Title: Simulation-Based Design and Analysis of Dose-Finding Trials
-Version: 0.2
-Date: 2020-06-15
+Version: 0.3
+Date: 2020-08-01
 Authors@R: c(
    person("Alex", "Dmitrienko", email = "admitrienko@medianainc.com", role = c("aut", "cre")),
    person("Alun", "Bedding", role = "ctb"),
    person("John", "Cook", role = "ctb"))
-Depends: mvtnorm, R (>= 3.4.1)
-Imports: Rcpp, RcppNumerical, officer, flextable, devEMF, shiny, shinydashboard
+Depends: R (>= 3.4.1), mvtnorm
+Imports: shiny, shinydashboard, devEMF, officer, flextable, Rcpp, RcppNumerical
 Suggests: testthat, devtools, DoseFinding
 LinkingTo: Rcpp, RcppEigen, RcppNumerical
 Maintainer: Alex Dmitrienko <admitrienko@medianainc.com>

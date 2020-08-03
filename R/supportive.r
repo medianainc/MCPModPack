@@ -294,7 +294,20 @@ ModStep = function(endpoint_index, selected_models, theta_vector, dose, resp, de
     # Maximum number of iterations to find maximum likelihood estimates
     maxit = 300
 
-    model_fit = MCPModFitDRModels(endpoint_index, selected_models, dose, resp, delta, direction_index, maxit, theta_vector)
+    withCallingHandlers({          
+
+        model_fit = MCPModFitDRModels(endpoint_index, selected_models, dose, resp, delta, direction_index, maxit, theta_vector)
+
+        },
+
+        warning = function(c) {
+          msg <- conditionMessage(c)
+          if ( grepl("the line search step became smaller than the minimum value allowed", msg, fixed = TRUE) ) {
+            invokeRestart("muffleWarning")
+          }
+        }
+
+    )
 
     results = list(model_fit = model_fit,
                    dose = dose, 
@@ -371,6 +384,8 @@ ContrastStep = function(endpoint_index, selected_models, user_specified, n_group
 
         # Alternative standardization for the quadratic model
         if (i == 2) {
+
+          parameter_values = rep(0, 3)
 
           if (direction_index == 1) {
   
@@ -1254,8 +1269,21 @@ MCPModSimulation = function(endpoint_type, models, alpha = 0.025, direction = "i
     # Go threshold is defined relative to the placebo effect
     go_threshold = go_threshold + placebo_effect 
 
-    # Run simulations
-    sim_results = MCPModRunSimulations(endpoint_index, selected_models, theta, theta_vector, delta, model_selection_index, opt_contrast, crit_value, sim_parameter_list, sim_model_list, direction_index, go_threshold, n_points, maxit)
+    withCallingHandlers({          
+
+      # Run simulations
+      sim_results = MCPModRunSimulations(endpoint_index, selected_models, theta, theta_vector, delta, model_selection_index, opt_contrast, crit_value, sim_parameter_list, sim_model_list, direction_index, go_threshold, n_points, maxit)
+
+              },
+
+      warning = function(c) {
+        msg <- conditionMessage(c)
+        if ( grepl("the line search step became smaller than the minimum value allowed", msg, fixed = TRUE) ) {
+          invokeRestart("muffleWarning")
+        }
+      }
+
+    )
 
     results = list(contrast_results = contrast_results,
                    input_parameters = input_parameters,
@@ -1981,11 +2009,7 @@ print.MCPModSimulationResults = function (x, digits = 3, ...) {
 
     if (input_parameters$model_selection != "aveAIC") {
 
-      cat("\n")
-
-      cat(paste0("Go probability summary based on the threshold of ", input_parameters$go_threshold))
-
-      cat("\n\n")
+      cat(paste0("\nGo probability summary (based on the threshold of ", input_parameters$go_threshold, ")\n\n"))
 
       x = data.frame(input_parameters$max_effect, 
                      round(sim_results$go_prob, digits))
@@ -2002,7 +2026,7 @@ print.MCPModSimulationResults = function (x, digits = 3, ...) {
 
     }
 
-    cat("\nTarget dose estimates\n\n")
+    cat("\nEstimated target doses (based on Delta = ", input_parameters$delta, ")\n\n", sep = "") 
 
     true_target_dose = round(sim_results$true_target_dose, digits)
     true_target_dose[true_target_dose == -1] = "NA"
