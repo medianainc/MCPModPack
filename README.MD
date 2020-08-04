@@ -1,7 +1,9 @@
 # MCPModPack 
 ## Simulation-Based Design and Analysis of Dose-Finding Trials
 
-[![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/MCPModPack)](https://cran.r-project.org/package=MCPModPack)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/MCPModPack)](https://cran.r-project.org/package=MCPModPack)
+[![CRAN\_Logs\_Badge](http://cranlogs.r-pkg.org/badges/MCPModPack)](https://cran.r-project.org/package=MCPModPack)
+[![CRAN\_Logs\_Badge\_Total](http://cranlogs.r-pkg.org/badges/grand-total/MCPModPack)](https://cran.r-project.org/package=MCPModPack)
 
 This package provides an efficient implementation of the MCPMod (Multiple Comparisons and Modeling) method to support a simulation-based design and analysis of dose-finding trials with normally distributed, binary and count endpoints.
 
