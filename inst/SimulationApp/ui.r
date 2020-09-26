@@ -379,6 +379,7 @@ shinyUI(
                   width = NULL,
 
                   tableOutput("ProbabilityOfModel")
+
                 )
               )
             )
@@ -431,7 +432,12 @@ shinyUI(
                 collapsible = TRUE,
                 width = NULL,
 
-                tableOutput("ProbabilityOfSelectingADose")
+                tableOutput("ProbabilityOfSelectingADose"),
+
+                tags$p(class = "help-block",
+                  "Each column presents the probability that the estimated target dose is less than or equal to the current dose and is strictly greater than the next lower dose.")
+
+
               )
             )
           ),
@@ -471,7 +477,7 @@ shinyUI(
           ),
 
           fluidRow(
-            column(12, class = "col-lg-6",
+            column(12, class = "col-lg-8",
               box(
                 title = "Assumed and estimated dose-response models",
                 status = "primary",

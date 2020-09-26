@@ -2591,7 +2591,7 @@ GenerateAnalysisReport = function(results, report_title) {
 
     if (input_parameters$model_selection == "maxT") {
       if (sum(mcp_results$sign_model) > 0) {
-        index = which.max(test_statistic)
+        index = which.max(test_statistics)
         selected_model = DF_selected_model_list[index]
       } 
     }
@@ -3100,8 +3100,10 @@ GenerateSimulationReport = function(results, report_title) {
 
     title = paste0("Table ", table_index, ". Simulation results: Probability of identifying the target dose.")
 
+    footnote = "Each column presents the probability that the estimated target dose is less than or equal to the current dose and is strictly greater than the next lower dose."
+
     column_width = c(1, rep(5.5 / (n_doses + 1), n_doses + 1)) 
-    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, FALSE)
+    item_list[[item_index]] = CreateTable(data_frame, column_names, column_width, title, FALSE, footnote)
     item_index = item_index + 1
     table_index = table_index + 1 
 
