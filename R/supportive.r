@@ -211,15 +211,12 @@ ComputeDRFunctionParameters = function(model_index, placebo_effect, max_effect, 
         coef[2] = max_effect / max_dose
     }
 
-    # Quadratic model
+    # Quadratic model (maximum is assumed to be achieved at the mid-point of the dose range)
     if (model_index == 2) {
         coef = rep(0, 3)
         coef[1] = placebo_effect
-        coef[2] = sign(max_effect) * sqrt(- 4 * max_effect * parameters[1])
-        coef[3] = parameters[1]  
-        vertex = -coef[2] / (2 * coef[3])
-        if (vertex >= max_dose) coef[2] = (max_effect - coef[3] * max_dose^2) / max_dose 
-        if (max_effect == 0) coef[3] = 0                
+        coef[2] = 4 * max_effect / max_dose
+        coef[3] = - coef[2] / max_dose 
     }
 
     # Exponential model
@@ -318,7 +315,7 @@ ModStep = function(endpoint_index, selected_models, theta_vector, dose, resp, de
 }
 
 # Compute the optimal contrasts, contrast correlation matrix and adjusted critical value
-ContrastStep = function(endpoint_index, selected_models, user_specified, n_groups, dose_levels, alpha, direction_index, mean_group, theta) {
+ContrastStep = function(endpoint_index, selected_models, user_specified, n_groups, dose_levels, alpha, direction_index, mean_group, theta) { 
 
     #####################################################
 
@@ -336,6 +333,8 @@ ContrastStep = function(endpoint_index, selected_models, user_specified, n_group
 
     max_dose = max(doses)
     diag_vec = rep(0, n_doses)
+
+    corr_matrix = 0
 
     # Normal endpoint
     if (endpoint_index == 1) {
@@ -425,7 +424,7 @@ ContrastStep = function(endpoint_index, selected_models, user_specified, n_group
     #####################################################
 
     # Apply the list of selected models
-    opt_contrast = opt_contrast[, model_list]
+    opt_contrast = opt_contrast[, model_list] 
 
     #####################################################
 
