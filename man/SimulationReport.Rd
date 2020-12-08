@@ -79,9 +79,9 @@ results = MCPModSimulation(endpoint_type = endpoint_type,
 # Simple summary of the MCPMod simulation results
 results
 
-# Detailed summary of the MCPMod simulation results
+# Detailed summary of the MCPMod simulation results (remove tempfile)
 SimulationReport(results, 
   "MCPMod simulation summary (Binary endpoint)", 
-  "MCPMod simulation summary (Binary endpoint).docx") 
+  tempfile("MCPMod simulation summary (Binary endpoint).docx", fileext=".docx")) 
   }
 }

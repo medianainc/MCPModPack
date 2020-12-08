@@ -133,10 +133,10 @@ results = MCPModSimulation(endpoint_type = endpoint_type,
 # Simple summary of the MCPMod simulation results
 results
 
-# Detailed summary of the MCPMod simulation results
+# Detailed summary of the MCPMod simulation results (remove tempfile)
 SimulationReport(results, 
   "MCPMod simulation summary (Count endpoint)", 
-  "MCPMod simulation summary (Count endpoint).docx")
+  tempfile("MCPMod simulation summary (Count endpoint).docx", fileext=".docx"))
 
   }
 }

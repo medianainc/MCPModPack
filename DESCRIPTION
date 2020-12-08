@@ -1,8 +1,8 @@
 Package: MCPModPack
 Type: Package
 Title: Simulation-Based Design and Analysis of Dose-Finding Trials
-Version: 0.3
-Date: 2020-11-22
+Version: 0.4
+Date: 2020-12-07
 Authors@R: c(
    person("Alex", "Dmitrienko", email = "admitrienko@medianainc.com", role = c("aut", "cre")),
    person("Alun", "Bedding", role = "ctb"),

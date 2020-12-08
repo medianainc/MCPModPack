@@ -92,9 +92,9 @@ results = MCPModAnalysis(endpoint_type = "Normal",
 # Simple summary of the MCPMod analysis results
 results
 
-# Detailed summary of the MCPMod analysis results
+# Detailed summary of the MCPMod analysis results (remove tempfile)
 AnalysisReport(results, 
   "MCPMod analysis summary (Normally distributed endpoint)", 
-  "MCPMod analysis summary (Normally distributed endpoint).docx") 
+  tempfile("MCPMod analysis summary (Normally distributed endpoint).docx", fileext=".docx")) 
   }
 }

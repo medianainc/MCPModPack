@@ -15,10 +15,3 @@ Alex Dmitrienko <admitrienko@medianainc.com>
 \seealso{
   \code{\link{MCPModSimulation}}, \code{\link{SimulationReport}}
 }
-\examples{
-	\donttest{
-# Launch a Shiny-based interface to perform a simulation-based evaluation 
-# of dose-finding trial designs
-SimulationApp()
-	}
-}

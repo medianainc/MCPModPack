@@ -15,10 +15,3 @@ Alex Dmitrienko <admitrienko@medianainc.com>
 \seealso{
   \code{\link{MCPModAnalysis}}, \code{\link{AnalysisReport}}
 }
-\examples{
-  \donttest{  
-# Launch a Shiny-based interface to perform an MCPMod-based analysis 
-# of a dose-finding trial
-AnalysisApp()
-	}
-}

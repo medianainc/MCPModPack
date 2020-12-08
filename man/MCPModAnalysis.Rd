@@ -104,10 +104,10 @@ results = MCPModAnalysis(endpoint_type = endpoint_type,
 # Simple summary of the MCPMod analysis results
 results
 
-# Detailed summary of the MCPMod analysis results
+# Detailed summary of the MCPMod analysis results (remove tempfile)
 AnalysisReport(results, 
   "MCPMod analysis summary (Binary endpoint)", 
-  "MCPMod analysis summary (Binary endpoint).docx") 
+  tempfile("MCPMod analysis summary (Binary endpoint).docx", fileext=".docx")) 
   }
 }
 
