@@ -9,7 +9,11 @@ Authors@R: c(
    person("John", "Cook", role = "ctb"))
 Depends: R (>= 3.4.1), mvtnorm
 Imports: shiny, shinydashboard, devEMF, officer, flextable, Rcpp, RcppNumerical
-Suggests: testthat, devtools, DoseFinding
+Suggests: 
+    testthat,
+    devtools, 
+    DoseFinding,
+    covr
 LinkingTo: Rcpp, RcppEigen, RcppNumerical
 Maintainer: Alex Dmitrienko <admitrienko@medianainc.com>
 Description: An efficient implementation of the MCPMod (Multiple Comparisons and Modeling) method to support a simulation-based design and analysis of dose-finding trials with normally distributed, binary and count endpoints (Bretz et al. (2005) <doi:10.1111/j.1541-0420.2005.00344.x>).
@@ -17,7 +21,6 @@ License: GPL-3
 LazyLoad: yes
 LazyData: true
 NeedsCompilation: yes
-Repository: CRAN
 Author: Alex Dmitrienko [aut, cre], Alun Bedding [ctb], John Cook [ctb]
 Repository: CRAN
 URL: https://github.com/medianainc/MCPModPack
